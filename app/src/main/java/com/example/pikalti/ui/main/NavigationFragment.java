@@ -28,7 +28,7 @@ public class NavigationFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_navigation, container, false);
         navigationList = (ListView) view.findViewById(R.id.navigationList);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, Data.navigations );
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, Data.menues[2] );
         navigationList.setAdapter(adapter);
 
         return view;

@@ -26,7 +26,7 @@ public class ContactsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_contacts, container, false);
         contactsList = (ListView) view.findViewById(R.id.contactsList);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, Data.contacts );
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, Data.menues[1] );
         contactsList.setAdapter(adapter);
 
         return view;
