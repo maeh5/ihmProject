@@ -2,12 +2,14 @@ package com.example.pikalti;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
-import com.example.pikalti.BicycleModeActivity;
 
 
 import com.example.pikalti.lib.bikeModeDetection.LocationMonitor;
@@ -16,33 +18,36 @@ import com.example.pikalti.lib.grelib.ClientReferenceMode;
 import com.example.pikalti.lib.grelib.GestureRecognitionClient;
 import com.example.pikalti.lib.grelib.GestureRecognitionResponseListener;
 import com.example.pikalti.lib.grelib.RemoteGestureRecognitionClient;
+import com.example.pikalti.lib.services.ActivityDetectionService;
+import com.example.pikalti.lib.utils.Constant;
+import com.google.android.gms.location.DetectedActivity;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.speech.RecognizerIntent;
+import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.pikalti.ui.main.SectionsPagerAdapter;
 import com.example.pikalti.databinding.ActivityMainBinding;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
+
+    public static final String TAG = MainActivity.class.getSimpleName();
 
     private static final int REQUEST_INTERNET = 0;
     private ActivityMainBinding binding;
@@ -50,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
     private Vibrator vibrator;
     private LocationMonitor locationMonitor;
     private TextView speedTextView;
+    private TextView activityTextView;
+    private String label;
 
 
     @Override
@@ -64,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Get the speed text view reference.
         this.speedTextView = findViewById(R.id.speedText);
+        this.activityTextView = findViewById(R.id.activityText);
 
         // Set the speed text as zero.
         this.speedTextView.setText(Utilities.formatSpeed(this, 0));
@@ -86,12 +94,9 @@ public class MainActivity extends AppCompatActivity {
         tabs.setupWithViewPager(viewPager);
         FloatingActionButton fab = binding.fab;
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent myIntent = new Intent(MainActivity.this, BicycleModeActivity.class);
-                MainActivity.this.startActivity(myIntent);
-            }
+        fab.setOnClickListener(view -> {
+            Intent myIntent = new Intent(MainActivity.this, BicycleModeActivity.class);
+            MainActivity.this.startActivity(myIntent);
         });
 
 
@@ -142,12 +147,31 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onStart() {
+      try {
+          super.onStart();
+        Log.d(TAG, "onStart():start ActivityDetectionService");
+        LocalBroadcastManager.getInstance(this).registerReceiver(mActivityBroadcastReceiver,
+                new IntentFilter(Constant.BROADCAST_DETECTED_ACTIVITY));
+
+        startService(new Intent(this, ActivityDetectionService.class));
+
+      }catch (Exception e){
+          System.out.println(e.getMessage());
+      }
+
+    }
 
     @Override
     protected void onPause() {
         gestureRecognitionClient.pause();
         super.onPause();
         this.disable();
+        if(mActivityBroadcastReceiver != null){
+            stopService(new Intent(this, ActivityDetectionService.class));
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(mActivityBroadcastReceiver);
+        }
 
     }
 
@@ -161,6 +185,68 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         gestureRecognitionClient.resume();
         super.onResume();
+    }
+
+
+
+
+
+    BroadcastReceiver mActivityBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Log.d(TAG, "onReceive()");
+            if (intent.getAction().equals(Constant.BROADCAST_DETECTED_ACTIVITY)) {
+                int type = intent.getIntExtra("type", -1);
+                int confidence = intent.getIntExtra("confidence", 0);
+                handleUserActivity(type, confidence);
+            }
+        }
+    };
+
+    private void handleUserActivity(int type, int confidence) {
+        label = "Unknown";
+        switch (type) {
+            case DetectedActivity.IN_VEHICLE: {
+                label = "In_Vehicle";
+                break;
+            }
+            case DetectedActivity.ON_BICYCLE: {
+                this.activityTextView.setText("Bicycle: " + confidence);
+                if (confidence>50){
+                    Intent myIntent = new Intent(MainActivity.this, BicycleModeActivity.class);
+                    MainActivity.this.startActivity(myIntent);
+                }
+                label = "On_Bicycle";
+                break;
+            }
+            case DetectedActivity.ON_FOOT: {
+                label = "On_Foot";
+                break;
+            }
+            case DetectedActivity.RUNNING: {
+                label = "Running";
+                break;
+            }
+            case DetectedActivity.STILL: {
+                label = "Still";
+                break;
+            }
+            case DetectedActivity.TILTING: {
+                label = "Tilting";
+                break;
+            }
+            case DetectedActivity.WALKING: {
+                label = "Walking";
+                break;
+            }
+            case DetectedActivity.UNKNOWN: {
+                break;
+            }
+        }
+
+        Log.d(TAG, "broadcast:onReceive(): Activity is " + label
+                + " and confidence level is: " + confidence);
+
     }
 
 
