@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 
 import com.example.pikalti.ui.main.SectionsPagerAdapter;
 import com.example.pikalti.databinding.ActivityMainBinding;
@@ -34,8 +35,18 @@ public class MainActivity extends AppCompatActivity {
         ViewPager viewPager = binding.viewPager;
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = binding.tabs;
+        ImageButton imgB = binding.imageButton;
+
         tabs.setupWithViewPager(viewPager);
         FloatingActionButton fab = binding.fab;
+
+        imgB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent myIntent = new Intent(MainActivity.this, SettingsActivity.class);
+                MainActivity.this.startActivity(myIntent);
+            }
+        });
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

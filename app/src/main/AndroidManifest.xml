@@ -15,6 +15,9 @@
         android:theme="@style/Theme.Pikalti"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".SettingsActivity"
+            android:exported="true" />
+        <activity
             android:name=".BicycleModeActivity"
             android:exported="true" />
         <activity

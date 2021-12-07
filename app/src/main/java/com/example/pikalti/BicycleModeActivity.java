@@ -3,6 +3,7 @@ package com.example.pikalti;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -30,6 +31,9 @@ public class BicycleModeActivity extends AppCompatActivity {
 
     private static final String TAG = "BicycleModeActivity";
     private static final int REQUEST_INTERNET = 0;
+    public static final String MyPREFERENCES = "MyPrefs" ;
+    public static final String BoolTTS = "TTS";
+    public static final String BoolVIB = "VIB";
     private ToggleButton toggleButton = null;
     private Vibrator vibrator;
     private int menu = 0;
@@ -42,6 +46,8 @@ public class BicycleModeActivity extends AppCompatActivity {
     private Button vibrationButton;
     private int ttsFlag = 1;
     private int vibrationFlag = 1;
+    int vibbool;
+    int ttsbool;
 
 
     @Override
@@ -54,36 +60,9 @@ public class BicycleModeActivity extends AppCompatActivity {
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         gestureRecognitionClient.connect("wss://sdk.motiongestures.com/recognition?api_key=rJwpH669ntncdi12KOoJrgiDqWgo5fJVUihM3IZdWKdGOvbKtT");
 
-
-        ttsButton = (Button) findViewById(R.id.toggleTTS);
-        ttsButton.setOnClickListener(v -> {
-            if (ttsFlag == 0) {
-                ttsFlag = 1; // 1 => Button ON
-                ttsButton.setBackgroundResource(R.drawable.unmute);
-            } else {
-                ttsFlag = 0; // 0 => Button OFF
-                ttsButton.setBackgroundResource(R.drawable.mute);
-            }
-        });
-
-        vibrationButton = (Button) findViewById(R.id.toggleVibration);
-        vibrationButton.setOnClickListener(v -> {
-            if (vibrationFlag == 0) {
-                vibrationFlag = 1; // 1 => Button ON
-                vibrationButton.setBackgroundResource(R.drawable.vibration);
-            } else {
-                vibrationFlag = 0; // 0 => Button OFF
-                vibrationButton.setBackgroundResource(R.drawable.unvibration);
-            }
-        });
-
-
-        t1 = new TextToSpeech(getApplicationContext(), status -> {
-            if (status != TextToSpeech.ERROR) {
-                t1.setLanguage(Locale.UK);
-            }
-        });
-
+        SharedPreferences shared = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
+        ttsbool = (shared.getInt(BoolVIB,0));
+        vibbool = (shared.getInt(BoolTTS,0));
 
         gestureRecognitionClient.setGestureRecognitionResponseListener(new GestureRecognitionResponseListener() {
             @Override
@@ -195,7 +174,7 @@ public class BicycleModeActivity extends AppCompatActivity {
     }
 
     public void vibrate() {
-        if (vibrationFlag == 1) {
+        if (vibbool == 1) {
             Runnable runnable = () -> {
                 if (Build.VERSION.SDK_INT >= 26) {
                     vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE));
@@ -210,7 +189,7 @@ public class BicycleModeActivity extends AppCompatActivity {
     }
 
     public void textToSpeach(String tts) {
-        if (ttsFlag == 1) t1.speak(tts, TextToSpeech.QUEUE_FLUSH, null);
+        if (ttsbool == 1) t1.speak(tts, TextToSpeech.QUEUE_FLUSH, null);
     }
 
 
