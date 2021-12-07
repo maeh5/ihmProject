@@ -3,4 +3,8 @@
     <string name="tab_text_1">Music</string>
     <string name="tab_text_2">Contacts</string>
     <string name="tab_text_3">Navigation</string>
+
+    <string name="speed_label">%1$s km/h</string>
+    <string name="no_location">Please enable your Location setting for the app to work.</string>
+    <string name="no_permission">Please grant Location usage permissions for the app to work.</string>
 </resources>

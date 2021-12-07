@@ -3,6 +3,7 @@ package com.example.pikalti;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -28,7 +29,6 @@ import java.util.Locale;
 public class BicycleModeActivity extends AppCompatActivity {
 
 
-    private static final String TAG = "BicycleModeActivity";
     private static final int REQUEST_INTERNET = 0;
     private ToggleButton toggleButton = null;
     private Vibrator vibrator;
@@ -159,6 +159,13 @@ public class BicycleModeActivity extends AppCompatActivity {
             case 1:
                 textToSpeach(Data.menuAction[menu] + Data.menues[menu][menuItem]);
                 firstTimeInMenu = false;
+                break;
+
+            case 0:
+                textToSpeach("Bike mode disabled");
+                Intent myIntent = new Intent(BicycleModeActivity.this, MainActivity.class);
+                myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                BicycleModeActivity.this.startActivity(myIntent);
                 break;
             default:
                 System.out.println("khrejt");
