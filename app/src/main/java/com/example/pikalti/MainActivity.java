@@ -27,6 +27,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
@@ -38,6 +39,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.pikalti.ui.main.SectionsPagerAdapter;
@@ -57,11 +60,15 @@ public class MainActivity extends AppCompatActivity {
     private TextView speedTextView;
     private TextView activityTextView;
     private String label;
+    private ImageButton settingsButton;
+
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -81,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
         enable();
 
 
-
         gestureRecognitionClient = new RemoteGestureRecognitionClient(this);
         gestureRecognitionClient.setReferenceMode(ClientReferenceMode.DEVICE_REFERENCE);//change this to USER_FACING if needed.
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
@@ -98,7 +104,11 @@ public class MainActivity extends AppCompatActivity {
             Intent myIntent = new Intent(MainActivity.this, BicycleModeActivity.class);
             MainActivity.this.startActivity(myIntent);
         });
-
+        settingsButton = (ImageButton) findViewById(R.id.settingsButton);
+        settingsButton.setOnClickListener(v -> {
+            Intent myIntent = new Intent(MainActivity.this, SettingsActivity.class);
+            MainActivity.this.startActivity(myIntent);
+        });
 
 
         gestureRecognitionClient.setGestureRecognitionResponseListener(new GestureRecognitionResponseListener() {
@@ -134,6 +144,8 @@ public class MainActivity extends AppCompatActivity {
 
         });
     }
+
+
 
     private void executeAction(Integer gestureLabel) {
 

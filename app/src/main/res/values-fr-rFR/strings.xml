@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Pikalti</string>
+    <string name="tab_music">Music</string>
+    <string name="tab_contacts">Contactes</string>
+    <string name="tab_navigation">Navigation</string>
+    <string name="no_location">Veuillez activer votre positionnement GPS pour que l\'application fonctionne</string>
+    <string name="no_permission">Veuillez activer la permission du positionnement GPS pour que l\'application fonctionne</string>
+    <string name="language">FR</string>
+    <string name="action_music">"Spotify va lancer "</string>
+    <string name="action_contacts">"l'application appel "</string>
+    <string name="action_navigation">Vous avez lancer une navigation vers</string>
+    <string name="nav1">Domicile</string>
+    <string name="nav2">Travail</string>
+    <string name="nav3">Restaurant</string>
+    <string name="nav4">Leclerc Saint martin d\'hères</string>
+    <string name="nav5">marché de noël</string>
+</resources>

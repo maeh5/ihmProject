@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <item
+        android:id="@+id/Vibration"
+        android:enabled="true"
+        android:icon="@drawable/vibration"
+        android:title="Vibration" />
+
+    <item
+        android:id="@+id/sound"
+        android:enabled="true"
+        android:icon="@drawable/vibration"
+        android:title="sound" />
+
+    <item
+        android:id="@+id/bikeMode"
+        android:enabled="true"
+        android:icon="@drawable/vibration"
+        android:title="bikeMode" />
+
+    <item
+        android:id="@+id/AA"
+        android:enabled="true"
+        android:icon="@drawable/vibration"
+        android:title="AA" />
+
+    <item
+        android:id="@+id/tutorial"
+        android:enabled="true"
+        android:icon="@drawable/vibration"
+        android:title="tutorial" />
+</menu>

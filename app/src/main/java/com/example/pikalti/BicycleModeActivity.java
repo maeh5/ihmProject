@@ -3,7 +3,9 @@ package com.example.pikalti;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -15,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.example.pikalti.lib.grelib.ClientReferenceMode;
@@ -37,11 +40,11 @@ public class BicycleModeActivity extends AppCompatActivity {
     private boolean firstTimeInMenu = true;
     private TextToSpeech t1;
     private GestureRecognitionClient gestureRecognitionClient;
+    public static final String MyPREFERENCES = "MyPrefs" ;
+    private TextView actionText;
 
-    private Button ttsButton;
-    private Button vibrationButton;
-    private int ttsFlag = 1;
-    private int vibrationFlag = 1;
+    private int ttsFlag;
+    private int vibrationFlag;
 
 
     @Override
@@ -54,28 +57,13 @@ public class BicycleModeActivity extends AppCompatActivity {
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         gestureRecognitionClient.connect("wss://sdk.motiongestures.com/recognition?api_key=rJwpH669ntncdi12KOoJrgiDqWgo5fJVUihM3IZdWKdGOvbKtT");
 
+        SharedPreferences pref = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        ttsFlag = pref.getInt("ttsFlag", 1);
+        vibrationFlag = pref.getInt("vibrationFlag", 1);
 
-        ttsButton = (Button) findViewById(R.id.toggleTTS);
-        ttsButton.setOnClickListener(v -> {
-            if (ttsFlag == 0) {
-                ttsFlag = 1; // 1 => Button ON
-                ttsButton.setBackgroundResource(R.drawable.unmute);
-            } else {
-                ttsFlag = 0; // 0 => Button OFF
-                ttsButton.setBackgroundResource(R.drawable.mute);
-            }
-        });
+        this.actionText = findViewById(R.id.actionText);
 
-        vibrationButton = (Button) findViewById(R.id.toggleVibration);
-        vibrationButton.setOnClickListener(v -> {
-            if (vibrationFlag == 0) {
-                vibrationFlag = 1; // 1 => Button ON
-                vibrationButton.setBackgroundResource(R.drawable.vibration);
-            } else {
-                vibrationFlag = 0; // 0 => Button OFF
-                vibrationButton.setBackgroundResource(R.drawable.unvibration);
-            }
-        });
 
 
         t1 = new TextToSpeech(getApplicationContext(), status -> {
@@ -130,6 +118,7 @@ public class BicycleModeActivity extends AppCompatActivity {
                 System.out.println(menuItem);
                 System.out.println(Data.menues[menu][menuItem]);
                 textToSpeach(Data.menues[menu][menuItem]);
+                actionText.setText(Data.menuTitles[menu] + "\n" + Data.menues[menu][menuItem]);
                 break;
 
             case 3: //lisser chnage menue item
@@ -139,6 +128,7 @@ public class BicycleModeActivity extends AppCompatActivity {
                 System.out.println(menuItem);
                 System.out.println(Data.menues[menu][menuItem]);
                 textToSpeach(Data.menues[menu][menuItem]);
+                actionText.setText(Data.menuTitles[menu] + "\n" + Data.menues[menu][menuItem]);
                 break;
 
             case 4: //lisser chnage menu
@@ -147,6 +137,7 @@ public class BicycleModeActivity extends AppCompatActivity {
                 firstTimeInMenu = true;
                 System.out.println(Data.menuTitles[menu]);
                 textToSpeach(Data.menuTitles[menu]);
+                actionText.setText(Data.menuTitles[menu]);
                 break;
             case 5: //limen chnage menu
                 menu = (menu == 2) ? 0 : menu + 1;
@@ -154,11 +145,13 @@ public class BicycleModeActivity extends AppCompatActivity {
                 firstTimeInMenu = true;
                 System.out.println(Data.menuTitles[menu]);
                 textToSpeach(Data.menuTitles[menu]);
+                actionText.setText(Data.menuTitles[menu]);
                 break;
 
             case 1:
                 textToSpeach(Data.menuAction[menu] + Data.menues[menu][menuItem]);
                 firstTimeInMenu = false;
+                actionText.setText(Data.menuAction[menu] + "\n" + Data.menues[menu][menuItem]);
                 break;
 
             case 0:
