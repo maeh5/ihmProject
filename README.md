@@ -1,8 +1,8 @@
 # Pikalti
 
-***Pikalti*** is a new way of interacting with your phone while cycling, you can start listenning to music, navigate to pre saved adresses or call a contact just by rotating your phone on its 6 axis.
+***Pikalti*** is a new way of interacting with your phone while cycling, you can start listening to music, navigating to pre-saved addresses, or calling a contact just by rotating your phone on its 6 axes.
 
-***Pikalti*** is still in developpement phase(music, navigation and calling a contact aren't actually working at the moment you can only hear a vocal feedback when detecting a mouvement, we were more focused on the technical part of the project and the way we interact with our phone), new features should be added in the nearest future to bring ***Pikalti*** to life.
+***Pikalti*** is still in the development phase(music, navigation, and calling a contact aren't actually working at the moment you can only hear voice feedback when detecting a movement, we were more focused on the technical part of the project and the way we interact with our phone), new features should be added in the nearest future to bring ***Pikalti*** to life.
 
 
 ## Installation
